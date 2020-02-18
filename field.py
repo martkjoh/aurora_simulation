@@ -2,6 +2,7 @@ import numpy as np
 from numpy import pi
 from numpy.linalg import norm
 from matplotlib import pyplot as plt
+from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
 # Constants
@@ -15,7 +16,7 @@ m = 1
 # Size of the simulated area
 X, Y, Z = 1, 1, 1
 # Number of points in each dimension
-N = 20
+N = 30
 # (r[1,x,y,z],r[2,x,y,z],r[3,x,y,z]) er en vektor plasert i (x, y, z)
 x, y, z = np.mgrid[-X:X:N*1j, -Y:Y:N*1j, -Z:Z:N*1j]
 r = np.array((x, y, z))
@@ -42,9 +43,22 @@ def dot(r1, r2):
 def A(r):
     return mu_0*m/(4*pi) * cross(r, v_dipole) / dot(r, r)**(3 / 2)
 
+def D(f):
+    return np.array([np.gradient(f, axis = i+1) for i in range(3)])
+
+def curl(f):
+    Df = D(f)
+    return np.einsum("ijk,jkxyz->ixyz", eijk, Df)
 
 fig = plt.figure()
 ax = Axes3D(fig)
 
-ax.quiver(*r, *A(r), length = 0.1)
+B = curl(A(r))
+B = np.ma.array(B)
+r2 = dot(r, r)
+B_masked = np.ma.array([np.ma.masked_where(r2 < 0.05, B[i]) for i in range(3)])
+
+ax.quiver(*r, *B_masked, length = 0.1)
+# ax.scatter(*r, r2, c = np.ndarray.flatten(rmask))
+
 plt.show()

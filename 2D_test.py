@@ -20,7 +20,15 @@ def V(r):
 def E(r):
     return np.gradient(V(r))
 
-fig, ax = plt.subplots()
+def D(i, f):
+    return np.gradient(f(r), axis = i)
 
-ax.streamplot(*r[::-1], *E(r)[::-1])
+def f(r):
+    return r[0]**2 + r[1]**3 
+
+fig = plt.figure()
+ax = Axes3D(fig)
+ax.plot_surface(*r, D(1, f))
+
+# ax.streamplot(*r[::-1], *E(r)[::-1])
 plt.show()

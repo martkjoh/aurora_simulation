@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{physics}
+
+\title{Semester assigmen ElMag - Simulation of aurora}
+\author{Martin Johsnrud}
+
+\begin{document}
+    \maketitle
+
+    Auroras come from charged particles, launch into outer space by sun storms, beeing guided by the magnetic field of the earth down in the atmosphere. (...) 
+    
+    \section*{Parametres}
+    This problem has many parametres, $q, M, R, m, \mu_0$, which is respectivley the particle charge and mass, the earths mass and magnetic dipole moment and the magnetic peremability of space. These can be reduced to 3, namely characteristic time, length and magnetic field,
+    \begin{equation*}
+        t_0 = \frac{M R^3}{q m \mu_o}, \quad x_0 = R, \quad B_0 = \frac{m \mu_0}{R^3}.
+    \end{equation*}
+    Real world values for these are  
+    \begin{align*}
+        & t_0 = \frac{1.6 \cdot 10^{-27}}{1.6\cdot10^{-19}}\frac{(6.47 \cdot 10^6)^3 }{8 \cdot 10^{22} 1.26 \cdot 10^{-6} } = 270 \cdot 10^{-6} \textrm{s}\\
+        & x_0 = 6.47 \cdot 10^6 \textrm{m}, \quad
+        B_0 = \frac{8 \cdot 10^{22} 1.26 \cdot 10^{-6}}{(6.47 \cdot 10^6)^3} = 0.0037 \cdot 10^{-2} \textrm{kg} \, \textrm{S}^{-2} \, \textrm{A}^{-1}.
+    \end{align*}
+    These will be used as units through the exercise, however we see that $x_0 / t_0 \sim 240 c$, so we choose to slow down the simulation by a factor $ 5\cdot 10^5$, i.e. using $t0 \cdot 5\cdot 10^5 \sim 135 \textrm{s}$ as the time unit. Then, a typical coronal ejection has speed unity.
+    
+    \section*{Numeric scheme}
+    Let $ \hat e_i B_i(x_j)$ be the earths magnetic field. The magnetic force on a particle with charge $q$, position $\hat e_i x_i(t)$ and veloxity $\hat e_i \dot x_i (t)$ is then
+    \begin{equation}
+        F_i = \epsilon_{ijk} \dot x_j B_k.
+    \end{equation}
+    By newtons second law, we get the equation of motion for the particle,
+    \begin{equation}
+        \ddot x_i = \epsilon_{ijk} \dot x_j B_k
+    \end{equation}
+    Rewriting to a first order set of equations, we get
+    \begin{align*}
+        \dv{t} y = \dv{t} 
+        \begin{pmatrix}
+            x_i \\
+            \dot x_i
+        \end{pmatrix}
+        = 
+        \begin{pmatrix}
+            \dot x_i \\
+            \epsilon_{ijk} \dot x_j B_k
+        \end{pmatrix}
+         = f(y).
+    \end{align*}
+    This can then be solved numerically by a runge kutta method.
+
+    \paragraph{}
+    We can model the earths magnetic field as a diploe. Let the x-axis point from the centre of the earth towards the sun, the y-axis roughly paralel to the earths orbit, and then the z-axis northwards. Let
+        \begin{equation*}
+            \hat m = \hat e_i \hat m_i
+        \end{equation*}
+        be the normailzed direction of earths magnetic dipole-moment. The earths magnetic field is then given by
+        \begin{equation}
+            B_j = \frac{1}{4\pi} \frac{3\hat m_i \hat x_i \hat x_j - \hat m_j}{r^2},
+        \end{equation}
+        where
+        \begin{equation*}
+            r = \sqrt{x_ix_i}, \quad \hat x_i = x_i / r.
+        \end{equation*}
+\end{document}

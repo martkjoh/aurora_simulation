@@ -11,8 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # magnetic permiablity
 mu_0 = 1
-# magnetization
-m = 1
+
 # Size of the simulated area
 X, Y, Z = 1, 1, 1
 # Number of points in each dimension
@@ -21,11 +20,11 @@ N = 10
 x, y, z = np.mgrid[-X:X:N*1j, -Y:Y:N*1j, -Z:Z:N*1j]
 r = np.array((x, y, z))
 # Direction of the dipole
-vx, vy, vz = 0, 0, 1
-v_dipole = np.array((
-    np.ones_like(x) * vx,
-    np.ones_like(y) * vy, 
-    np.ones_like(z) * vz))
+mx, my, mz = 0, 0, 1
+m = np.array((
+    np.ones_like(x) * mx,
+    np.ones_like(y) * my, 
+    np.ones_like(z) * mz))
 
 # levi-cevita
 eijk = np.zeros((3, 3, 3))
@@ -49,7 +48,7 @@ def curl(f):
 
 # Mathematical functions
 def A(r):
-    return mu_0*m/(4*pi) * cross(r, v_dipole) / dot(r, r)**(3 / 2)
+    return mu_0/(4*pi) * cross(r, m) / dot(r, r)**(3 / 2)
 
 
 # Array manip

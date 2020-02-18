@@ -68,13 +68,13 @@ ax.grid(False)
 Ar = A(r)
 Br = curl(Ar)
 
-r1 = 0.2
+r1 = 0.1
 r2 = 1
 Ar = mask_radialy_vec(Ar, r1, r2)
-Br = mask_radialy_vec(Br, r1, r2)
+Br = mask_radialy_vec(Br, r1, r2)    
 
-ax.quiver(*r, *Ar, length = 1)
-ax.quiver(*r, *Br, length = 1, color = "red")
+ax.quiver(*r, *Ar, length = 0.2, pivot = "middle")
+ax.quiver(*r, *Br, length = 0.2, color = "red", pivot = "middle")
 # ax.scatter(*r, r2, c = np.ndarray.flatten(rmask))
 
 plt.show()

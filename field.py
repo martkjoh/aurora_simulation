@@ -9,15 +9,12 @@ from mpl_toolkits.mplot3d import Axes3D
 #
 # The numeric constants defining the problem
 
-# magnetic permiablity
-mu_0 = 1
-
 # Size of the simulated area
-X, Y, Z = 1, 1, 1
+L = 1
 # Number of points in each dimension
 N = 10
 # (r[1,x,y,z],r[2,x,y,z],r[3,x,y,z]) er en vektor plasert i (x, y, z)
-x, y, z = np.mgrid[-X:X:N*1j, -Y:Y:N*1j, -Z:Z:N*1j]
+x, y, z = np.mgrid[-L:L:N*1j, -L:L:N*1j, -L:L:N*1j]
 r = np.array((x, y, z))
 # Direction of the dipole
 mx, my, mz = 0, 0, 1
@@ -48,7 +45,7 @@ def curl(f):
 
 # Mathematical functions
 def A(r):
-    return mu_0/(4*pi) * cross(r, m) / dot(r, r)**(3 / 2)
+    return 1/(4*pi) * cross(r, m) / dot(r, r)**(3 / 2)
 
 
 # Array manip

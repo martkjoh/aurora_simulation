@@ -16,7 +16,7 @@ m = 1
 # Size of the simulated area
 X, Y, Z = 1, 1, 1
 # Number of points in each dimension
-N = 30
+N = 10
 # (r[1,x,y,z],r[2,x,y,z],r[3,x,y,z]) er en vektor plasert i (x, y, z)
 x, y, z = np.mgrid[-X:X:N*1j, -Y:Y:N*1j, -Z:Z:N*1j]
 r = np.array((x, y, z))
@@ -33,15 +33,12 @@ eijk[0, 1, 2] = eijk[2, 0, 1] = eijk[1, 2, 0] = 1
 eijk[2, 1, 0] = eijk[0, 2, 1] = eijk[1, 0, 2] = -1
 
 
-print(eijk.shape, r.shape, v_dipole.shape)
+# Vector operations
 def cross(r1, r2):
     return np.einsum("ijk,jxyz,kxyz->ixyz", eijk, r1, r2)
 
 def dot(r1, r2):
     return np.einsum("ixyz,ixyz->xyz", r1, r2) 
-
-def A(r):
-    return mu_0*m/(4*pi) * cross(r, v_dipole) / dot(r, r)**(3 / 2)
 
 def D(f):
     return np.array([np.gradient(f, axis = i+1) for i in range(3)])
@@ -50,15 +47,34 @@ def curl(f):
     Df = D(f)
     return np.einsum("ijk,jkxyz->ixyz", eijk, Df)
 
+# Mathematical functions
+def A(r):
+    return mu_0*m/(4*pi) * cross(r, v_dipole) / dot(r, r)**(3 / 2)
+
+
+# Array manip
+# Mask everything not inside radius (r1, r2)
+def mask_radialy_vec(f, r1, r2):
+    rr = dot(r, r)
+    f = np.ma.array(f)
+    f = np.ma.array([np.ma.masked_where(rr < r1, f[i]) for i in range(3)])
+    f = np.ma.array([np.ma.masked_where(rr > r2, f[i]) for i in range(3)])
+    return f
+
 fig = plt.figure()
 ax = Axes3D(fig)
+ax.grid(False)
 
-B = curl(A(r))
-B = np.ma.array(B)
-r2 = dot(r, r)
-B_masked = np.ma.array([np.ma.masked_where(r2 < 0.05, B[i]) for i in range(3)])
+Ar = A(r)
+Br = curl(Ar)
 
-ax.quiver(*r, *B_masked, length = 0.1)
+r1 = 0.2
+r2 = 1
+Ar = mask_radialy_vec(Ar, r1, r2)
+Br = mask_radialy_vec(Br, r1, r2)
+
+ax.quiver(*r, *Ar, length = 1)
+ax.quiver(*r, *Br, length = 1, color = "red")
 # ax.scatter(*r, r2, c = np.ndarray.flatten(rmask))
 
 plt.show()

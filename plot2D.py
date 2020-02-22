@@ -1,4 +1,5 @@
 from parametres import *
+from particles import get_lines
 from matplotlib import pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
@@ -6,6 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D
 n = 20
 L = 2
 x = np.array(np.mgrid[-L:L:n*1j, -L:L:n*1j])
+legends = ["$\\vec B/[B_0]$", "$\\vec m$",]
 
 def dot(x1, x2):
     return np.einsum("ixy, ixy -> xy", x1, x2)
@@ -23,34 +25,55 @@ def mask2D(f, R):
 
 
 def plot_field(ax, alpha = 1):
-    Bxz = mask2D(B2D(x, 0, 2), 1)
-    Byz = mask2D(B2D(x, 1, 2), 1)
-    ax[0].quiver(*x, *Bxz, pivot = "middle", alpha = 0.9 *alpha)
-    ax[1].quiver(*x, *Byz, pivot = "middle", alpha = 0.9 * alpha)
-    earth1 = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2 * alpha)
-    earth2 = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2 * alpha)
-    ax[0].add_artist(earth1)
-    ax[1].add_artist(earth2)
+    # Getting the xz and yz componenes of the field and dp-moment
+    Bs = [mask2D(B2D(x, 0, 2), 1), mask2D(B2D(x, 1, 2), 1)]
+    ms = [[m[0], m[2]], [m[1], m[2]]]
     origin = np.mgrid[0:1:1, 0:1:1]
-    ax[0].quiver(*origin, m[0], m[2], scale = 2, pivot = "middle", color = "red")
-    ax[1].quiver(*origin, m[1], m[2], scale = 2, pivot = "middle", color = "red")
+    legend_element = []
+    for i in range(2):
+        legend_element.append(ax[i].quiver(*x, *Bs[i], pivot = "middle", alpha = 0.9 *alpha))
+        earth = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2 * alpha)
+        ax[i].add_artist(earth)
+        legend_element.append(ax[i].quiver(*origin, *ms[i], scale = 2, pivot = "middle", color = "red", alpha = 0.8 * alpha))
 
-def plot_lines(ax):
+    return legend_element
+
+# Plot one row of particle-lines (same y-value)
+def plot_lines(lines, ax, i):
+    for j in range(n_z):
+        k = i*n_z + j
+        ys = lines[k]
+        ax[0].plot(ys[:, 0, 0], ys[:, 0, 2], color = cm.viridis(j / n_z))
+        ax[1].plot(ys[:, 0, 1], ys[:, 0, 2], color = cm.viridis(j / n_z))
+
+def get_ax():
+    fig, ax = plt.subplots(1, 2, sharey=True)
+    ax[0].set_xlabel("$x/[R_0]$")
+    ax[0].set_ylabel("$z/[R_0]$")
+    ax[1].set_xlabel("$y/[R_0]$")
+    ax[1].set_ylabel("$z/[R_0]$")
+    ax[0].set_title("$xz$-plane")
+    ax[1].set_title("$yz$-plane")
+    ax[0].set_xlim(-L, L)
+    ax[0].set_ylim(-L, L)
+    ax[1].set_xlim(-L, L)
+    ax[1].set_ylim(-L, L)
+    return ax
+
+def plot1():
+    ax = get_ax()
+    legend_element = plot_field(ax)
+    ax[0].legend(legend_element[2:], legends)
+    ax[1].legend(legend_element[2:], legends)
+    plt.savefig(ax, "b_field_2D.png")
+
+def plot2():
     lines = get_lines()
     for i in range(n_y):
-        for j in range(n_z):
-            k = i*n_z + j
-            ys = lines[k]
-            ax[0].plot(ys[:, 0, 0], ys[:, 0, 2], color = cm.viridis(j / n_z))
-            ax[1].plot(ys[:, 0, 1], ys[:, 0, 2], color = cm.viridis(j / n_z))
-            plot_field2D(ax)
+        ax = get_ax()
+        legend_element = plot_field(ax, alpha = 0.2)
+        plot_lines(lines, ax, i)
+        plt.savefig(ax, "charged_particles_2D.png")
 
-
-fig, ax = plt.subplots(1, 2, sharey=True)
-ax[0].set_xlabel("$x$")
-ax[0].set_ylabel("$z$")
-ax[1].set_xlabel("$y$")
-ax[1].set_ylabel("$z$")
-ax[0].set_title("")
-plot_field(ax)
-plt.show()
+plot1()
+plot2()

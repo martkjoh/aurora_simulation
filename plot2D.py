@@ -16,6 +16,15 @@ def B2D(x, i, j):
     r = np.sqrt(dot(x, x))
     return (1/ 4*pi) * (3*mx*x / r**2 - m2D) / r**3
 
+def energy(ys):
+    xDot = ys[:, 1, :]
+    xDot2 = np.einsum("ti, ti -> t", xDot, xDot)
+    return 1 / 2 * xDot2
+def deltaE(E):
+    E0 = E[0] * np.ones_like(E)
+    return abs(E - E0) / E0
+
+
 def mask2D(f, R):
     r = np.sqrt(dot(x, x))
     f = np.ma.array(f)
@@ -69,6 +78,20 @@ def get_ax2():
     ax[0][1].set_ylim(-L/4, L)
     return ax
 
+def get_ax3():
+    fig, ax = plt.subplots(figsize = (20, 10))
+    ax.set_yscale("log")
+    ax.set_ylabel("$\Delta E$")
+    ax.set_xlabel("$t / [t_0]$")
+    n = n_y * n_z
+    x = np.linspace(0, n - 1, n)
+    cmap = plt.get_cmap("plasma", n)
+    norm = mpl.colors.BoundaryNorm(x + 0.5, n - 1)
+    sm = plt.cm.ScalarMappable(norm = norm, cmap=cmap)
+    sm.set_array([]) 
+    plt.colorbar(sm, ticks = x, label = "particle #")
+    return ax, fig
+
 def plot1():
     ax = get_ax1()
     legend_element = plot_field(ax)
@@ -84,7 +107,23 @@ def plot2():
         plot_lines(ax, i)
 
     plt.tight_layout()    
-    plt.savefig("figs/charged_particles_2D.png".format(i))
+    plt.savefig("figs/charged_particles_2D.png")
 
-plot1()
-plot2()
+def plot3():
+    ax, fig = get_ax3()
+    n = n_y * n_z
+    t = np.linspace(0, T, N)
+    maximum = [0, 0]
+    for i in range(n):
+        ys = read_path(i)
+        E = energy(ys)
+        dE = deltaE(E)
+        if max(dE) > maximum[0]:
+            maximum[0] = max(dE)
+            maximum[1] = i
+        im = ax.plot(t, dE, color = cm.plasma(i / n), label = "particle {}".format(i))
+
+    print("max relative error was {}, by particle {}".format(*maximum))
+    plt.savefig("figs/relative_error_energy.png")
+
+plot3()

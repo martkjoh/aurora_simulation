@@ -3,7 +3,7 @@
 \usepackage{graphicx}
 \graphicspath{{./figs/}}
 
-\title{Semester assigmen ElMag - Simulation of aurora}
+\title{Semester assigment ElMag - Simulation of aurora}
 \author{Martin Johsnrud}
 
 \begin{document}
@@ -12,9 +12,9 @@
     Auroras come from charged particles, launch into outer space by sun storms, beeing guided by the magnetic field of the earth down in the atmosphere. (...) 
     
     \section*{Parametres}
-        This problem has many parametres, $q, M, R, m, \mu_0$, which is respectivley the particle charge and mass, the earths mass and magnetic dipole moment and the magnetic peremability of space. These can be reduced to 3, namely characteristic time, length and magnetic field,
+        This problem has many parametres, $q, M, R_{\tiny\odot}, m, \mu_0$, which is respectivley the particle charge and mass, the earths mass and magnetic dipole moment and the magnetic peremability of space. These can be reduced to 3, namely characteristic time, length, magnetic field and energy
         \begin{equation*}
-            t_0 = \frac{M R^3}{q m \mu_o}, \quad x_0 = R, \quad B_0 = \frac{m \mu_0}{R^3}.
+            t_0 = \frac{M R_{\tiny\odot}^3}{q m \mu_o}, \quad x_0 = R_{\tiny\odot}, \quad B_0 = \frac{M}{q t_0}, \quad E_0 = \frac{M R_{\tiny\odot}^2}{t_0^2}.
         \end{equation*}
         Real world values for these are  
         \begin{align*}
@@ -73,7 +73,6 @@
         \end{align*}
         This can then be solved numerically by a runge kutta method. This i show in figure \ref{Charged particles}, where several particles with different starting positions are simulated as they aproach the earth, and is deflected by the magnetic field of the earth. The only particels that are able to reach down to earths surface are particles apraoching from higer up, explaining why we only see auroras near the poles.
 
-        
         \begin{figure}
             \centering
             \vspace{-50px}
@@ -81,6 +80,24 @@
             \caption{Charged particles aproacing earth from different starting points. Evne though the lines may overlap with the earth, it does not mean that they have hit the ground, as the graph only contains two dimensions.}
             \label{Charged particles}
         \end{figure}
+
+    \section*{Accuracy}
+    To thest the accuracy of the numerical scheme, one can use the fact tha magnetic forces never does any work on particles, as they always are perpendicular to the velocity of a particle. The potential energy of the particle should thus be conserved, as the simultation does not take into account friction, nor electromagnetic radiation. Kinetic energy is given by
+    $$
+        E = \frac{1}{2}\dot x^2,
+    $$
+    in units of $E_0$. Relative error,
+    $$
+        \Delta E(t) = \frac{|E(t) - E(0)|}{E(0)},
+    $$
+    is thus a usefull cuantity for evaluating the precission of the simulations. Figure \ref{relative error} shows this for all simulated paths.
+    \begin{figure}
+        \centering
+        \includegraphics[width = \textwidth]{relative_error_energy}
+        \label{relative error}
+        \caption{The relative shifts in energy, in comparison with the starting values. Particle 3 has the largest value, $2.036 \cdot 10^{-5}$}
+    \end{figure}
+
 
 
 \end{document}

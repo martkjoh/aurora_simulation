@@ -39,15 +39,11 @@ def plot_earth(ax):
     origin = np.mgrid[0:1:1, 0:1:1, 0:1:1]
     ax.quiver(*origin, *m, pivot = "middle", color = "red", zorder = 1)
 
-
-
 def plot_lines3D(ax):
     n = 3 * n_z
     for i in range(n):
         ys = read_path(i)
         ax.plot(*ys[:, 0].T, color = cm.viridis(i/n))
-
-    
 
 # Mask everything not inside radius (r1, r2)
 def mask3D(f, r1, r2):

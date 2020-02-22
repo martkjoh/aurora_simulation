@@ -2,6 +2,7 @@ import numpy as np
 from numpy import pi
 from matplotlib import pyplot as plt
 from matplotlib import cm
+import matplotlib as mpl
 
 # This file is for setting global parametres used by all scripts
 
@@ -13,7 +14,7 @@ plt.rc("lines", lw=2)
 plt.rc('font', **font)
 
 # Stepsize for the runge kutta method
-dt = 0.01
+dt = 0.005
 T = 18
 N = int(T / dt)
 L = 2

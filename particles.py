@@ -1,28 +1,8 @@
-import numpy as np
-from numpy import pi
+from parametres import *
 from matplotlib import pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 
-
-dt = 0.01
-T = 15
-N = int(T / dt)
-L = 2
-
-# The magnetic dipole moment
-m = np.array([0.2, 0.1, 1])
-m = m / np.sqrt(m @ m)
-
-# Initial conditions
-n_y = 5
-n_z = 4
-
-XDot0 = [0.2, 0, 0]
-X0s = []
-for i in range(n_y):
-    for j in range(n_z):
-        X0s.append([-2, -1 + 0.5*i, 0.1 + 0.3*j])
 
 def RK4(ys, f, i):
     k1 = f(ys[i]) * dt

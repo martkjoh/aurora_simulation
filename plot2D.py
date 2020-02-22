@@ -1,4 +1,4 @@
-from particles import *
+from parametres import *
 from matplotlib import pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
@@ -22,28 +22,22 @@ def mask2D(f, R):
     return np.ma.array([np.ma.masked_where(r < R, f[i]) for i in range(2)])
 
 
-def plot_field2D(ax):
+def plot_field(ax, alpha = 1):
     Bxz = mask2D(B2D(x, 0, 2), 1)
     Byz = mask2D(B2D(x, 1, 2), 1)
-    ax[0].quiver(*x, *Bxz, pivot = "middle", alpha = 0.9)
-    ax[1].quiver(*x, *Byz, pivot = "middle", alpha = 0.9)
-
-    earth1 = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2)
-    earth2 = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2)
-    origin = np.mgrid[0:1:1, 0:1:1]
+    ax[0].quiver(*x, *Bxz, pivot = "middle", alpha = 0.9 *alpha)
+    ax[1].quiver(*x, *Byz, pivot = "middle", alpha = 0.9 * alpha)
+    earth1 = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2 * alpha)
+    earth2 = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2 * alpha)
     ax[0].add_artist(earth1)
     ax[1].add_artist(earth2)
-    scal = 10
+    origin = np.mgrid[0:1:1, 0:1:1]
     ax[0].quiver(*origin, m[0], m[2], scale = 2, pivot = "middle", color = "red")
     ax[1].quiver(*origin, m[1], m[2], scale = 2, pivot = "middle", color = "red")
 
-def plot_lines2D(ax):
+def plot_lines(ax):
     lines = get_lines()
     for i in range(n_y):
-        ax[0].set_xlabel("$x$")
-        ax[0].set_ylabel("$z$")
-        ax[1].set_xlabel("$y$")
-        ax[1].set_ylabel("$z$")
         for j in range(n_z):
             k = i*n_z + j
             ys = lines[k]
@@ -53,5 +47,10 @@ def plot_lines2D(ax):
 
 
 fig, ax = plt.subplots(1, 2, sharey=True)
-plot_field2D(ax)
+ax[0].set_xlabel("$x$")
+ax[0].set_ylabel("$z$")
+ax[1].set_xlabel("$y$")
+ax[1].set_ylabel("$z$")
+ax[0].set_title("")
+plot_field(ax)
 plt.show()

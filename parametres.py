@@ -1,7 +1,16 @@
 import numpy as np
 from numpy import pi
+from matplotlib import pyplot as plt
+from matplotlib import cm
 
 # This file is for setting global parametres used by all scripts
+
+font = {'family' : 'serif', 
+        'weight' : 'normal', 
+        'size'   : 25}
+plt.rcParams['mathtext.fontset'] = 'dejavuserif'
+plt.rc("lines", lw=2)
+plt.rc('font', **font)
 
 # Stepsize for the runge kutta method
 dt = 0.01

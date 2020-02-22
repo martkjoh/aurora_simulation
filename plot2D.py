@@ -44,7 +44,7 @@ def plot_lines(ax, i):
         ax[0].plot(ys[:, 0, 0], ys[:, 0, 2], color = cm.viridis(j / n_z))
         ax[1].plot(ys[:, 0, 1], ys[:, 0, 2], color = cm.viridis(j / n_z))
 
-def get_ax():
+def get_ax1():
     fig, ax = plt.subplots(1, 2, sharey=True, sharex=True, figsize = (20, 10))
     ax[0].set_xlabel("$x/[R_0]$")
     ax[0].set_ylabel("$z/[R_0]$")
@@ -56,19 +56,35 @@ def get_ax():
     ax[0].set_ylim(-L, L)
     return ax
 
+def get_ax2():
+    fig, ax = plt.subplots(n_y, 2, sharex = True, sharey = True, figsize = (20, 32))
+    ax[-1][0].set_xlabel("$x/[R_0]$")
+    ax[0][0].set_ylabel("$z/[R_0]$")
+    ax[-1][1].set_xlabel("$y/[R_0]$")
+    ax[0][0].set_title("$xz$-plane")
+    ax[0][1].set_title("$yz$-plane")
+    ax[0][0].set_xlim(-L, L / 4)
+    ax[0][0].set_ylim(-L/4, L)
+    ax[0][1].set_xlim(-L, L)
+    ax[0][1].set_ylim(-L/4, L)
+    return ax
+
 def plot1():
-    ax = get_ax()
+    ax = get_ax1()
     legend_element = plot_field(ax)
     ax[0].legend(legend_element[2:], legends)
     ax[1].legend(legend_element[2:], legends)
     plt.savefig("figs/b_field_2D.png")
 
 def plot2():
+    axs = get_ax2()
     for i in range(n_y):
-        ax = get_ax()
+        ax = axs[i]
         legend_element = plot_field(ax, alpha = 0.2)
         plot_lines(ax, i)
-        plt.savefig("figs/charged_particles_{}_2D.png".format(i))
+
+    plt.tight_layout()    
+    plt.savefig("figs/charged_particles_2D.png".format(i))
 
 plot1()
 plot2()

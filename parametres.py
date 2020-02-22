@@ -14,7 +14,7 @@ plt.rc('font', **font)
 
 # Stepsize for the runge kutta method
 dt = 0.01
-T = 15
+T = 25
 N = int(T / dt)
 L = 2
 
@@ -24,7 +24,7 @@ m = m / np.sqrt(m @ m)
 
 # Number of particels to start
 n_y = 5
-n_z = 4
+n_z = 5
 
 # Initial conditions
 XDot0 = [0.2, 0, 0]

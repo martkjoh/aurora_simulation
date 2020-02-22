@@ -41,3 +41,5 @@ def simulate_paths():
             RK4(ys, f, j)
         
         write_path(ys, i)
+
+simulate_paths()

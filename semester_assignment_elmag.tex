@@ -1,5 +1,7 @@
 \documentclass{article}
 \usepackage{physics}
+\usepackage{graphicx}
+\graphicspath{{./figs/}}
 
 \title{Semester assigmen ElMag - Simulation of aurora}
 \author{Martin Johsnrud}
@@ -21,7 +23,7 @@
             B_0 = \frac{8 \cdot 10^{22} 1.26 \cdot 10^{-6}}{(6.47 \cdot 10^6)^3} = 0.0037 \cdot 10^{-2} \textrm{kg} \, \textrm{S}^{-2} \, \textrm{A}^{-1}.
         \end{align*}
         These will be used as units through the exercise, however we see that $x_0 / t_0 \sim 240 c$, so we choose to slow down the simulation by a factor $ 5\cdot 10^5$, i.e. using $t0 \cdot 5\cdot 10^5 \sim 135 \textrm{s}$ as the time unit. Then, a typical coronal ejection has speed unity.
-    
+
     \section*{Magnetic field}
     \paragraph{}
     We can model the earths magnetic field as a diploe. Let the x-axis point from the centre of the earth towards the sun, the y-axis roughly paralel to the earths orbit, and then the z-axis northwards. Let
@@ -37,7 +39,15 @@
             r = \sqrt{x_ix_i}, \quad \hat x_i = x_i / r.
         \end{equation*}
 
-        **Figure** shows the magnetic field as seen from the eraths orbit, and on the other side than the sun. 
+        Figure \ref{B-field} shows the magnetic field as seen from the eraths orbit, and on the other side than the sun. 
+        
+        \begin{figure}
+            \centering    
+            \includegraphics[width=\textwidth]{b_field_2D}
+            \caption{The earths magnetic field, in the $xz$- and $yz$-plane.  }
+            \label{B-field}
+        \end{figure}
+
     \section*{Charged particles}
         Let $ \hat e_i B_i(x_j)$ be the earths magnetic field. The magnetic force on a particle with charge $q$, position $\hat e_i x_i(t)$ and veloxity $\hat e_i \dot x_i (t)$ is then
         \begin{equation}
@@ -61,5 +71,16 @@
             \end{pmatrix}
             = f(y).
         \end{align*}
-        This can then be solved numerically by a runge kutta method.
+        This can then be solved numerically by a runge kutta method. This i show in figure \ref{Charged particles}, where several particles with different starting positions are simulated as they aproach the earth, and is deflected by the magnetic field of the earth. The only particels that are able to reach down to earths surface are particles apraoching from higer up, explaining why we only see auroras near the poles.
+
+        
+        \begin{figure}
+            \centering
+            \vspace{-50px}
+            \includegraphics[width=\textwidth ]{charged_particles_2D}
+            \caption{Charged particles aproacing earth from different starting points. Evne though the lines may overlap with the earth, it does not mean that they have hit the ground, as the graph only contains two dimensions.}
+            \label{Charged particles}
+        \end{figure}
+
+
 \end{document}

@@ -5,12 +5,12 @@ from numpy import pi
 
 # Stepsize for the runge kutta method
 dt = 0.01
-T = 15
+T = 20
 N = int(T / dt)
 L = 2
 
 # The magnetic dipole moment of the earth
-m = np.array([0.3, -0.1, 1])
+m = np.array([-0.1, 0.3, 1])
 m = m / np.sqrt(m @ m)
 
 # Number of particels to start

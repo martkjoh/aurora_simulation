@@ -20,17 +20,27 @@ def B(x):
 def f(y):
     return np.array([y[1], np.cross(y[1], B(y[0]))])
 
-def get_lines():
-    lines = []
+def write_path(ys, i):
+    shape = ys.shape    
+    A = np.reshape(ys, (shape[0], shape[2] * 2))
+    np.savetxt("data/particle_{}.csv".format(i), A, delimiter = ",")
+
+def read_path(i):
+    A = np.loadtxt("data/particle_{}.csv".format(i), delimiter = ",")
+    shape = A.shape
+    print(np.reshape(A, (shape[0], 2, 3)))
+
+def simulate_paths():
     for i in range(len(X0s)):
         # y[i, j, k] is the k'th coordinat of the j'th derivative of x wrt t at t = dt*i
-        ys = np.empty((N + 1, 2, 3))
+        ys = np.empty((N, 2, 3))
         y0 = np.array([X0s[i], XDot0])
         ys[0] = y0
 
-        for j in range(N):
+        for j in range(N - 1):
             RK4(ys, f, j)
         
-        lines.append(ys)
-    return lines
+        write_path(ys, i)
 
+simulate_paths()
+read_path(0)

@@ -23,15 +23,23 @@ def mask2D(f, R):
 
 
 def plot_field2D(ax):
-    Bxz = mask2D(B2D(x, 0, 2), 0.8)
-    Byz = mask2D(B2D(x, 1, 2), 0.8)
-    ax[0].quiver(*x, *Bxz, pivot = "middle", alpha = 0.2)
-    ax[1].quiver(*x, *Byz, pivot = "middle", alpha = 0.2)
+    Bxz = mask2D(B2D(x, 0, 2), 1)
+    Byz = mask2D(B2D(x, 1, 2), 1)
+    ax[0].quiver(*x, *Bxz, pivot = "middle", alpha = 0.9)
+    ax[1].quiver(*x, *Byz, pivot = "middle", alpha = 0.9)
 
-def plot2D():
+    earth1 = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2)
+    earth2 = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2)
+    origin = np.mgrid[0:1:1, 0:1:1]
+    ax[0].add_artist(earth1)
+    ax[1].add_artist(earth2)
+    scal = 10
+    ax[0].quiver(*origin, m[0], m[2], scale = 2, pivot = "middle", color = "red")
+    ax[1].quiver(*origin, m[1], m[2], scale = 2, pivot = "middle", color = "red")
+
+def plot_lines2D(ax):
     lines = get_lines()
     for i in range(n_y):
-        fig, ax = plt.subplots(1, 2, sharey=True)
         ax[0].set_xlabel("$x$")
         ax[0].set_ylabel("$z$")
         ax[1].set_xlabel("$y$")
@@ -43,6 +51,7 @@ def plot2D():
             ax[1].plot(ys[:, 0, 1], ys[:, 0, 2], color = cm.viridis(j / n_z))
             plot_field2D(ax)
 
-        plt.show()
 
-plot2D()
+fig, ax = plt.subplots(1, 2, sharey=True)
+plot_field2D(ax)
+plt.show()

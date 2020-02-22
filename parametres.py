@@ -14,7 +14,7 @@ plt.rc('font', **font)
 
 # Stepsize for the runge kutta method
 dt = 0.01
-T = 25
+T = 18
 N = int(T / dt)
 L = 2
 

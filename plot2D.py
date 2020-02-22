@@ -1,5 +1,5 @@
 from parametres import *
-from particles import get_lines
+from particles import read_path
 from matplotlib import pyplot as plt
 from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
@@ -39,15 +39,15 @@ def plot_field(ax, alpha = 1):
     return legend_element
 
 # Plot one row of particle-lines (same y-value)
-def plot_lines(lines, ax, i):
+def plot_lines(ax, i):
     for j in range(n_z):
         k = i*n_z + j
-        ys = lines[k]
+        ys = read_path(k)
         ax[0].plot(ys[:, 0, 0], ys[:, 0, 2], color = cm.viridis(j / n_z))
         ax[1].plot(ys[:, 0, 1], ys[:, 0, 2], color = cm.viridis(j / n_z))
 
 def get_ax():
-    fig, ax = plt.subplots(1, 2, sharey=True)
+    fig, ax = plt.subplots(1, 2, sharey=True, sharex=True, figsize = (20, 10))
     ax[0].set_xlabel("$x/[R_0]$")
     ax[0].set_ylabel("$z/[R_0]$")
     ax[1].set_xlabel("$y/[R_0]$")
@@ -56,8 +56,6 @@ def get_ax():
     ax[1].set_title("$yz$-plane")
     ax[0].set_xlim(-L, L)
     ax[0].set_ylim(-L, L)
-    ax[1].set_xlim(-L, L)
-    ax[1].set_ylim(-L, L)
     return ax
 
 def plot1():
@@ -65,15 +63,14 @@ def plot1():
     legend_element = plot_field(ax)
     ax[0].legend(legend_element[2:], legends)
     ax[1].legend(legend_element[2:], legends)
-    plt.savefig(ax, "b_field_2D.png")
+    plt.savefig("figs/b_field_2D.png")
 
 def plot2():
-    lines = get_lines()
     for i in range(n_y):
         ax = get_ax()
         legend_element = plot_field(ax, alpha = 0.2)
-        plot_lines(lines, ax, i)
-        plt.savefig(ax, "charged_particles_2D.png")
+        plot_lines(ax, i)
+        plt.savefig("figs/charged_particles_{}_2D.png".format(i))
 
 plot1()
 plot2()

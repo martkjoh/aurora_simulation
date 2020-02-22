@@ -28,7 +28,7 @@ def write_path(ys, i):
 def read_path(i):
     A = np.loadtxt("data/particle_{}.csv".format(i), delimiter = ",")
     shape = A.shape
-    print(np.reshape(A, (shape[0], 2, 3)))
+    return np.reshape(A, (shape[0], 2, 3))
 
 def simulate_paths():
     for i in range(len(X0s)):
@@ -41,6 +41,3 @@ def simulate_paths():
             RK4(ys, f, j)
         
         write_path(ys, i)
-
-simulate_paths()
-read_path(0)

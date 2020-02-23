@@ -26,6 +26,14 @@
         These will be used as units through the exercise. However was $x_0 / t_0 \sim 240 c$, so we choose to slow down the simulation by a factor $ 5\cdot 10^5$, i.e. using $t_0 \cdot 5\cdot 10^5 \sim 135 \textrm{s}$ as the time unit. Then, a typical coronal ejection has speed unity.
 
     \section*{Magnetic field}
+
+    \begin{figure}
+        \centering    
+        \includegraphics[width=\textwidth]{b_field_2D}
+        \caption{The earths magnetic field, in the $xz$- and $yz$-plane.  }
+        \label{B-field}
+    \end{figure}
+
     \paragraph{}
     We can model the earths magnetic field as a diploe. Let the x-axis point from the centre of the earth towards the sun, the y-axis roughly paralel to the earths orbit, and then the z-axis northwards. Let
         \begin{equation*}
@@ -41,21 +49,23 @@
         \end{equation*}
 
         Figure \ref{B-field} shows the magnetic field as seen from the eraths orbit, and on the other side than the sun. 
-        
-        \begin{figure}
-            \centering    
-            \includegraphics[width=\textwidth]{b_field_2D}
-            \caption{The earths magnetic field, in the $xz$- and $yz$-plane.  }
-            \label{B-field}
-        \end{figure}
 
     \section*{Charged particles}
+
     \begin{figure}
         \centering
         \vspace{-50px}
         \includegraphics[width=\textwidth ]{charged_particles_2D}
         \caption{Charged particles aproaching earth from different starting points. Evne though the lines may overlap with the earth, it does not mean that they have hit the ground, as the graph only contains two dimensions.}
         \label{Charged particles}
+    \end{figure}
+
+    \begin{figure}
+        \centering
+        \vspace{-50px}
+        \includegraphics[width=\textwidth ]{charged_particles_zoom}
+        \caption{A closer look at the top paths}
+        \label{Charged particles zoom}
     \end{figure}
 
         Let $ \hat e_i B_i(x_j)$ be the earths magnetic field. The magnetic force on a particle with charge $q$, position $\hat e_i x_i(t)$ and veloxity $\hat e_i \dot x_i (t)$ is then

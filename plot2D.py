@@ -20,6 +20,7 @@ def energy(ys):
     xDot = ys[:, 1, :]
     xDot2 = np.einsum("ti, ti -> t", xDot, xDot)
     return 1 / 2 * xDot2
+    
 def deltaE(E):
     E0 = E[0] * np.ones_like(E)
     return abs(E - E0) / E0
@@ -92,6 +93,17 @@ def get_ax3():
     plt.colorbar(sm, ticks = x, label = "particle #")
     return ax, fig
 
+def get_ax4():
+    fig, ax = plt.subplots(2, 2, sharex = True, sharey = True, figsize = (20, 18))
+    ax[-1][0].set_xlabel("$x/[R_0]$")
+    ax[0][0].set_ylabel("$z/[R_0]$")
+    ax[-1][1].set_xlabel("$y/[R_0]$")
+    ax[0][0].set_title("$xz$-plane")
+    ax[0][1].set_title("$yz$-plane")
+    ax[0][0].set_xlim(-1, 0)
+    ax[0][0].set_ylim(0, 1)
+    return ax
+
 def plot1():
     ax = get_ax1()
     legend_element = plot_field(ax)
@@ -126,7 +138,18 @@ def plot3():
     print("max relative error was {}, by particle {}".format(*maximum))
     plt.savefig("figs/relative_error_energy.png")
 
+def plot4():
+    axs = get_ax4()
+    for i in range(2):
+        ax = axs[i]
+        legend_element = plot_field(ax, alpha = 0.2)
+        plot_lines(ax, i)
+
+    plt.tight_layout()    
+    plt.savefig("figs/charged_particles_zoom.png")
+
 def make_plots():
     plot1()
     plot2()
     plot3()
+    plot4()

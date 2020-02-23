@@ -15,7 +15,7 @@ plt.rc('font', **font)
 
 # Stepsize for the runge kutta method
 dt = 0.005
-T = 18
+T = 25
 N = int(T / dt)
 L = 2
 
@@ -32,4 +32,4 @@ XDot0 = [0.2, 0, 0]
 X0s = []
 for i in range(n_y):
     for j in range(n_z):
-        X0s.append([-2, -1 + 0.5*i, 0.1 + 0.3*j])
+        X0s.append([-2, -1.5 + 0.5*i, 0.1 + 0.3*j])

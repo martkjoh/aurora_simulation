@@ -31,7 +31,10 @@ def read_path(i):
     return np.reshape(A, (shape[0], 2, 3))
 
 def simulate_paths():
+    print("Simultaing paths. Number of steps: {}".format(N))
+    print("Particle nr. (of {}): ".format(n_y*n_z), flush = True, end = "")
     for i in range(len(X0s)):
+        print("{}, ".format(i), flush = True, end = "")
         # y[i, j, k] is the k'th coordinat of the j'th derivative of x wrt t at t = dt*i
         ys = np.empty((N, 2, 3))
         y0 = np.array([X0s[i], XDot0])
@@ -41,6 +44,5 @@ def simulate_paths():
             RK4(ys, f, j)
         
         write_path(ys, i)
+    print()
         
-if __name__ == "__main__":
-    simulate_paths()

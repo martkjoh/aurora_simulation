@@ -84,9 +84,9 @@ def get_ax3():
     ax.set_ylabel("$\Delta E$")
     ax.set_xlabel("$t / [t_0]$")
     n = n_y * n_z
-    x = np.linspace(0, n - 1, n)
+    x = np.linspace(0, n, n + 1)
     cmap = plt.get_cmap("plasma", n)
-    norm = mpl.colors.BoundaryNorm(x + 0.5, n - 1)
+    norm = mpl.colors.BoundaryNorm(x - 0.5, n)
     sm = plt.cm.ScalarMappable(norm = norm, cmap=cmap)
     sm.set_array([]) 
     plt.colorbar(sm, ticks = x, label = "particle #")
@@ -121,12 +121,12 @@ def plot3():
         if max(dE) > maximum[0]:
             maximum[0] = max(dE)
             maximum[1] = i
-        im = ax.plot(t, dE, color = cm.plasma(i / n), label = "particle {}".format(i))
+        ax.plot(t, dE, color = cm.plasma(i / n))
 
     print("max relative error was {}, by particle {}".format(*maximum))
     plt.savefig("figs/relative_error_energy.png")
 
-if __name__ == "__main__":
+def make_plots():
     plot1()
     plot2()
     plot3()

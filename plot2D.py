@@ -126,4 +126,7 @@ def plot3():
     print("max relative error was {}, by particle {}".format(*maximum))
     plt.savefig("figs/relative_error_energy.png")
 
-plot3()
+if __name__ == "__main__":
+    plot1()
+    plot2()
+    plot3()

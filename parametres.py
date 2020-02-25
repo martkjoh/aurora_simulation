@@ -28,8 +28,10 @@ n_y = 5
 n_z = 5
 
 # Initial conditions
-XDot0 = [0.2, 0, 0]
-X0s = []
+XDot0 = np.array([0.2, 0, 0])
+X0s = np.empty((n_y * n_z, 3))
 for i in range(n_y):
     for j in range(n_z):
-        X0s.append([-2, -1.5 + 0.5*i, 0.1 + 0.3*j])
+        X0s[i * n_y + j, 0] = -2.
+        X0s[i * n_y + j, 1] = -1.5 + 0.5*i
+        X0s[i * n_y + j, 2]  = 0.1 + 0.3*j

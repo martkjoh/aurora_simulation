@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage{physics}
 \usepackage{graphicx}
+\usepackage{url}
+
 \graphicspath{{./figs/}}
 
 \title{Semester assigment ElMag - Simulation of aurora}
@@ -9,21 +11,24 @@
 \begin{document}
     \maketitle
 
-    Auroras come from charged particles, launch into outer space by sun storms, beeing guided by the magnetic field of the earth down in the atmosphere. (...) 
+    Auroras come from charged particles launch into outer space by sun storms beeing guided by the magnetic field of the earth down in the atmosphere. This project simulates how the path of these charged particles are affected by magnetic field using a Runge-Kutta method.
     
     \section*{Parametres}
-        This problem has many parametres, $q, M, R_{\odot}, m, \mu_0$, which is respectivley the particle charge and mass, the earths mass and magnetic dipole moment and the magnetic peremability of space. These can be reduced to 4 characteristic sizes, nameley length, magnetic field, timeand energy
+        This problem has many parametres, $q, M, R_{\odot}, m, \mu_0$, which is respectivley the particle charge and mass, the earths mass and magnetic dipole moment and the magnetic peremability of space. They span many orders of magnitude, which is inconvinient in numerical solution. By reducing them to 4 characteristic sizes,  length, magnetic flux density, time and energy, they can be used as convenien units fitting the problem. They are
         \begin{equation*}
-            x_0 = R_{\odot}, \quad  B_0 = \frac{\mu_0 m}{x_0^3}, \quad t_0 = \frac{M}{q}\frac{1}{B_0},  \quad E_0 = M\frac{ x_0^2}{t_0^2}.
+            x_0 = R_{\odot}, \quad  
+            B_0 = \frac{\mu_0 m}{x_0^3}, \quad 
+            t_0 = \frac{M}{q}\frac{5\cdot 10^5}{B_0},  \quad 
+            E_0 = M\frac{x_0^2}{t_0^2}.
         \end{equation*}
-        Real world values for these are  
+        A numeric factor has been added to the time, so that $x_0 / t_0$ is about speed of a typical coronal ejection. \footnote[1]{\url{https://en.wikipedia.org/wiki/Coronal_mass_ejection#physical_properties}} The values for these are, as some of them do not have permanet and definet values, roughly 
         \begin{align*}
             & x_0 = 6.47 \cdot 10^6 \textrm{m}, \quad
-            B_0 = \frac{1.26 \cdot 10^{-6} \, 8 \cdot 10^{22}}{x_0^3} = 3.7 \cdot 10^{-5} \frac{\textrm{kg}}{\textrm{s}^{2} \, \textrm{A}} \\
-            &t_0 = \frac{1.6 \cdot 10^{-27}}{1.6\cdot10^{-19}}\frac{1}{B_0} = 2.7 \cdot 10^{-4} \textrm{s}, \quad 
-            E_0 = 1.6 \cdot 10^{-27} \frac{x_0^2}{t_0^2} = 9.2 \cdot 10^{-9} \frac{\textrm{kg} \, \textrm{m}^2}{\textrm{s}^2}
+            B_0 = \frac{1.26 \cdot 10^{-6} \, 8 \cdot 10^{22}}{x_0^3} = 3.7 \cdot 10^{-4} \frac{\textrm{kg}}{\textrm{s}^{2} \, \textrm{A}} \\
+            &t_0 = \frac{1.7 \cdot 10^{-27}}{1.6\cdot10^{-19}}\frac{5\cdot 10^5}{B_0} = 14 \textrm{s}, \quad 
+            E_0 = M\frac{x_0^2}{t_0^2} = 3.6 \cdot 10^{-16} \frac{\textrm{kg} \, \textrm{m}^2}{\textrm{s}^2}
         \end{align*}
-        These will be used as units through the exercise. However was $x_0 / t_0 \sim 240 c$, so we choose to slow down the simulation by a factor $ 5\cdot 10^5$, i.e. using $t_0 \cdot 5\cdot 10^5 \sim 135 \textrm{s}$ as the time unit. Then, a typical coronal ejection has speed unity.
+        These will be used as units through the exercise.
 
     \section*{Magnetic field}
 
@@ -35,13 +40,9 @@
     \end{figure}
 
     \paragraph{}
-    We can model the earths magnetic field as a diploe. Let the x-axis point from the centre of the earth towards the sun, the y-axis roughly paralel to the earths orbit, and then the z-axis northwards. Let
-        \begin{equation*}
-            \hat m = \hat e_i \hat m_i
-        \end{equation*}
-        be the normailzed direction of earths magnetic dipole-moment. The earths magnetic field is then given by
+    We can model the earths magnetic field as a diploe. Let the x-axis point from the centre of the earth towards the sun, the y-axis roughly paralel to the earths orbit, and then the z-axis northwards. With $\hat m$ as the unit vector of earths magnetic dipole-moment, the magnetic field of the earth is then given by
         \begin{equation}
-            B_j = \frac{1}{4\pi} \frac{3\hat m_i \hat x_i \hat x_j - \hat m_j}{r^2},
+            B_j = \frac{1}{4\pi} \frac{3\hat m_i \hat x_i \hat x_j - \hat m_j}{(r/x_0)^3},
         \end{equation}
         where
         \begin{equation*}
@@ -97,7 +98,7 @@
         \centering
         \includegraphics[width = \textwidth]{relative_error_energy}
         \label{Relative error}
-        \caption{The relative shifts in energy, in comparison with the starting values. Particle 3 has the largest value, $2.036 \cdot 10^{-5}$}
+        \caption{The relative shifts in energy, in comparison with the starting values. Particle 8 has the largest value, $2.036 \cdot 10^{-5}$}
     \end{figure}
 
     To thest the accuracy of the numerical scheme, one can use the fact tha magnetic forces never does any work on particles, as they always are perpendicular to the velocity of a particle. The potential energy of the particle should thus be conserved, as the simultation does not take into account friction, nor electromagnetic radiation. Kinetic energy is given by

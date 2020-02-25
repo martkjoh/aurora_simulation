@@ -12,13 +12,16 @@ def RK4(ys, f, i):
     delta = 1 / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
     ys[i + 1]  = ys[i] + delta
 
+def dot(x1, x2):
+    return np.einsum("i..., i... -> ...", x1, x2)
+
 # Gives the B-field at a point
-def B(x):
-    r = np.sqrt(x @ x)
-    return (1/ 4 * pi) * (3*(m @ x) * x / r**2 - m) / r**3
+def B(x, m):
+    r = np.sqrt(dot(x, x))
+    return (1/ 4 * pi) * (3*dot(m, x) * x / r**2 - m) / r**3
 
 def f(y):
-    return np.array([y[1], np.cross(y[1], B(y[0]))])
+    return np.array([y[1], np.cross(y[1], B(y[0], m))])
 
 def write_path(ys, i):
     shape = ys.shape    

@@ -11,104 +11,130 @@
 \begin{document}
     \maketitle
 
-    Auroras come from charged particles launch into outer space by sun storms beeing guided by the magnetic field of the earth down in the atmosphere. This project simulates how the path of these charged particles are affected by magnetic field using a Runge-Kutta method.
+    Auroras come from charged particles launch into outer space by sun storms beeing guided by the magnetic field of the earth down in the atmosphere. This project simulates how the path of these charged particles, spesifically protons, are affected by magnetic field using a Runge-Kutta method.
     
-    \section*{Parametres}
-        This problem has many parametres, $q, M, R_{\odot}, m, \mu_0$, which is respectivley the particle charge and mass, the earths mass and magnetic dipole moment and the magnetic peremability of space. They span many orders of magnitude, which is inconvinient in numerical solution. By reducing them to 4 characteristic sizes,  length, magnetic flux density, time and energy, they can be used as convenien units fitting the problem. They are
-        \begin{equation*}
-            x_0 = R_{\odot}, \quad  
-            B_0 = \frac{\mu_0 m}{x_0^3}, \quad 
-            t_0 = \frac{M}{q}\frac{5\cdot 10^5}{B_0},  \quad 
-            E_0 = M\frac{x_0^2}{t_0^2}.
-        \end{equation*}
-        A numeric factor has been added to the time, so that $x_0 / t_0$ is about speed of a typical coronal ejection. \footnote[1]{\url{https://en.wikipedia.org/wiki/Coronal_mass_ejection#physical_properties}} The values for these are, as some of them do not have permanet and definet values, roughly 
-        \begin{align*}
-            & x_0 = 6.47 \cdot 10^6 \textrm{m}, \quad
-            B_0 = \frac{1.26 \cdot 10^{-6} \, 8 \cdot 10^{22}}{x_0^3} = 3.7 \cdot 10^{-4} \frac{\textrm{kg}}{\textrm{s}^{2} \, \textrm{A}} \\
-            &t_0 = \frac{1.7 \cdot 10^{-27}}{1.6\cdot10^{-19}}\frac{5\cdot 10^5}{B_0} = 14 \textrm{s}, \quad 
-            E_0 = M\frac{x_0^2}{t_0^2} = 3.6 \cdot 10^{-16} \frac{\textrm{kg} \, \textrm{m}^2}{\textrm{s}^2}
-        \end{align*}
-        These will be used as units through the exercise.
+    \section*{Theory}
+        \subsection*{Parametres}
+        This problem has many parametres, $q, M, R_{\odot}, m, \mu_0$, respectivley the proton charge and mass, the earths mass and magnetic dipole moment and the magnetic peremability of space. They span many orders of magnitude, which is inconvinient in numerical computing. By reducing them to 4 characteristic sizes,  length, magnetic flux density, time and energy, they can be used as convenien units fitting the problem. They are
+            \begin{equation*}
+                x_0 = R_{\odot}, \quad  
+                B_0 = \frac{\mu_0 m}{x_0^3}, \quad 
+                t_0 = \frac{M}{q}\frac{5\cdot 10^5}{B_0},  \quad 
+                E_0 = M\frac{x_0^2}{t_0^2}.
+            \end{equation*}
+        A numeric factor has been added to the time, so that $x_0 / t_0$ is about the speed of a typical coronal ejection. \cite{Wiki coronal ejections} As some of them do not have permanet and definit values they will not give very precise results. Their values are roughly \cite{Wolfram alpha}
+            \begin{align*}
+                & x_0 = 6.47 \cdot 10^6 \textrm{m}, \quad
+                B_0 = \frac{1.26 \cdot 10^{-6} \, 8 \cdot 10^{22}}{x_0^3} = 3.7 \cdot 10^{-4} \frac{\textrm{kg}}{\textrm{s}^{2} \, \textrm{A}} \\
+                &t_0 = \frac{1.7 \cdot 10^{-27}}{1.6\cdot10^{-19}}\frac{5\cdot 10^5}{B_0} = 14 \textrm{s}, \quad 
+                E_0 = M\frac{x_0^2}{t_0^2} = 3.6 \cdot 10^{-16} \frac{\textrm{kg} \, \textrm{m}^2}{\textrm{s}^2}
+            \end{align*}
+        These are used to define the dimensionless varibales
+            \begin{align*}
+                x_i^* = x_i/x_0, \quad B_i^* = B_i/B_0, \quad t_i^* = t_i/t_0, \quad E^* = E/E_0, 
+            \end{align*}
+        which are used thourgout the report, but the asterisk will be dropped for convenience.
 
-    \section*{Magnetic field}
+        \subsection*{Magnetic field}
 
+        \begin{figure}
+            \centering     
+            \includegraphics[width=\textwidth]{b_field_2D}
+            \caption{The earths magnetic field, in the $xz$- and $yz$-plane.  }
+            \label{B-field}
+        \end{figure}
+
+        We can model the earths magnetic field as a diploe, with dipole moment $\vec m$. Let the x-axis point from the centre of the earth towards the sun, the y-axis roughly paralel to the earths orbit, and then the z-axis northwards. The magnetic field of the earth is then given by
+            \begin{equation}
+                B_j = \frac{1}{4\pi} \frac{3\hat m_i \hat x_i \hat x_j - \hat m_j}{r^3},
+            \end{equation}
+            where
+            \begin{equation*}
+                r = \sqrt{x_ix_i}, \quad \hat x_i = x_i / r, \quad \hat m_i = m_i/m
+            \end{equation*}
+        This is the only force being considered in this simulation.
+        \subsection*{Charged particles}
+
+            The force from the magnetic field of the earth on a particle with charge $q$, position $\hat e_i x_i(t)$ and veloxity $\hat e_i \dot x_i (t)$ is
+            \begin{equation}
+                F_i = \epsilon_{ijk} \dot x_j B_k.
+            \end{equation}
+            Newtons second law gives the equation of motion for the particle,
+            \begin{equation}
+                \ddot x_i = \epsilon_{ijk} \dot x_j B_k
+            \end{equation}
+            Rewriting to a first order set of equations yields
+            \begin{align*}
+                \dv{t} y = \dv{t} 
+                \begin{pmatrix}
+                    x_i \\
+                    \dot x_i
+                \end{pmatrix}
+                = 
+                \begin{pmatrix}
+                    \dot x_i \\
+                    \epsilon_{ijk} \dot x_j B_k
+                \end{pmatrix}
+                = f(y).
+            \end{align*}
+            This can then be solved numerically by a Runge-Kutta method. The simulation done here uses the Runge-Kutta 4 method.
+        
+        \subsection*{Accuracy}
+
+        The fact that magnetic forces never do any work can be use to test the accuracy of the numerical scheme. The kinetic energy of the particle should be conserved, as the simultation does not take into account friction, nor electromagnetic radiation. Kinetic energy is given by
+            $$
+                E = \frac{1}{2}\dot x^2.
+            $$
+        Relative error,
+            $$
+                \Delta E(t) = \frac{|E(t) - E(0)|}{E(0)},
+            $$
+        is thus a usefull quantity for evaluating the precission of the simulations. 
+
+    \section*{Results and discussion}
+    
     \begin{figure}
-        \centering    
-        \includegraphics[width=\textwidth]{b_field_2D}
-        \caption{The earths magnetic field, in the $xz$- and $yz$-plane.  }
-        \label{B-field}
-    \end{figure}
-
-    \paragraph{}
-    We can model the earths magnetic field as a diploe. Let the x-axis point from the centre of the earth towards the sun, the y-axis roughly paralel to the earths orbit, and then the z-axis northwards. With $\hat m$ as the unit vector of earths magnetic dipole-moment, the magnetic field of the earth is then given by
-        \begin{equation}
-            B_j = \frac{1}{4\pi} \frac{3\hat m_i \hat x_i \hat x_j - \hat m_j}{(r/x_0)^3},
-        \end{equation}
-        where
-        \begin{equation*}
-            r = \sqrt{x_ix_i}, \quad \hat x_i = x_i / r.
-        \end{equation*}
-
-        Figure \ref{B-field} shows the magnetic field as seen from the eraths orbit, and on the other side than the sun. 
-
-    \section*{Charged particles}
-
-    \begin{figure}
-        \centering
         \vspace{-50px}
-        \includegraphics[width=\textwidth ]{charged_particles_2D}
-        \caption{Charged particles aproaching earth from different starting points. Evne though the lines may overlap with the earth, it does not mean that they have hit the ground, as the graph only contains two dimensions.}
+        \centering
+        \includegraphics[width=\textwidth]{charged_particles_2D}
+        \caption{Charged particles approach earth from different starting points. Evne though the lines may overlap with the earth, it does not mean that they have hit the ground, as the graph only contains two dimensions. The magnetic dipole moment is not to scale, and only inteded to indicate the direction.}
         \label{Charged particles}
     \end{figure}
 
     \begin{figure}
+        \vspace{-60px}
         \centering
-        \vspace{-50px}
-        \includegraphics[width=\textwidth ]{charged_particles_zoom}
-        \caption{A closer look at the top paths}
+        \includegraphics[width=\textwidth]{charged_particles_zoom}
+        \caption{A closer look at the two first series. The magnetic force leads to a change in direction of the particles, while the speed is maintaine, and the particles are sent back into space.}
         \label{Charged particles zoom}
     \end{figure}
 
-        Let $ \hat e_i B_i(x_j)$ be the earths magnetic field. The magnetic force on a particle with charge $q$, position $\hat e_i x_i(t)$ and veloxity $\hat e_i \dot x_i (t)$ is then
-        \begin{equation}
-            F_i = \epsilon_{ijk} \dot x_j B_k.
-        \end{equation}
-        By newtons second law, we get the equation of motion for the particle,
-        \begin{equation}
-            \ddot x_i = \epsilon_{ijk} \dot x_j B_k
-        \end{equation}
-        Rewriting to a first order set of equations, we get
-        \begin{align*}
-            \dv{t} y = \dv{t} 
-            \begin{pmatrix}
-                x_i \\
-                \dot x_i
-            \end{pmatrix}
-            = 
-            \begin{pmatrix}
-                \dot x_i \\
-                \epsilon_{ijk} \dot x_j B_k
-            \end{pmatrix}
-            = f(y).
-        \end{align*}
-        This can then be solved numerically by a runge kutta method. This i show in figure \ref{Charged particles}, where several particles with different starting positions are simulated as they aproach the earth, and is deflected by the magnetic field of the earth. The only particels that are able to reach down to earths surface are particles apraoching from higer up, explaining why we only see auroras near the poles.
-
-    \section*{Accuracy}
     \begin{figure}
         \centering
-        \includegraphics[width = \textwidth]{relative_error_energy}
+        \includegraphics[width=\textwidth]{relative_error_energy}
+        \caption{The relative shifts in energy, in comparison with the starting values. Particle 8 has the largest value, $2.036 \cdot 10^{-5}$. This corresponds to the particle with the tightest turns in its path.}
         \label{Relative error}
-        \caption{The relative shifts in energy, in comparison with the starting values. Particle 8 has the largest value, $2.036 \cdot 10^{-5}$}
     \end{figure}
 
-    To thest the accuracy of the numerical scheme, one can use the fact tha magnetic forces never does any work on particles, as they always are perpendicular to the velocity of a particle. The potential energy of the particle should thus be conserved, as the simultation does not take into account friction, nor electromagnetic radiation. Kinetic energy is given by
-    $$
-        E = \frac{1}{2}\dot x^2,
-    $$
-    in units of $E_0$. Relative error,
-    $$
-        \Delta E(t) = \frac{|E(t) - E(0)|}{E(0)},
-    $$
-    is thus a usefull cuantity for evaluating the precission of the simulations. Figure \ref{Relative error} shows this for all simulated paths.
+    Figure \ref{B-field} shows the magnetic field as seen from the behind the erath in its orbit, and on the other side than the sun. The results are shown in figure \ref{Charged particles}, with a closer look at the most intricate paths in figure \ref{Charged particles zoom}. 
+    
+    Several particles with different starting positions are simulated as they approach the earth. They are then deflected by the magnetic field of the earth, to varying degrees. Particles approaching the equator are deflected northwards, and then flung away. The spiraling paths are consistent with the fact that magnetic forces act orthogonally to the velocity. 
+    
+    Particles comming towards the earth further north comes closer to the surface of the earth, while some even reach it and goes though the surface, as there is nothing in the simulation taking into account the earth. This shows that the simultaion captures both the ability of the earths magnetic field to shield the earth, and why auroras only are seen closer to the poles.
 
+    The relative error in energy for all paths, as a function of time, is show in figure \ref{Relative error}. This shows that the step length used, $\Delta t = 0.005$, is more than enough for this purpose.
+
+    \begin{thebibliography}{9}
+        \bibitem{Wiki coronal ejections}
+        Wikipedia contributers,
+        \textit{Coronal mass ejection,}
+        \url{https://en.wikipedia.org/wiki/Coronal_mass_ejection#physical_properties}
+        [Online; accessed 21-02-2020]
+
+        \bibitem{Wolfram alpha} 
+        Wolfram alpha LLC,
+        \textit{Magnetic dipole moment of the earth},
+        \url{https://www.wolframalpha.com/input/?i=magnetic+dipole+moment+of+the+earth}
+        [Online; accessed 21-02-2020]
+    \end{thebibliography}
 \end{document}

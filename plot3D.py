@@ -1,5 +1,5 @@
 from parametres import *
-from particles import read_path
+from particles import read_path, B, dot
 from mpl_toolkits.mplot3d import Axes3D
 from numpy import sin, cos
 from matplotlib.animation import FuncAnimation as FA
@@ -18,14 +18,6 @@ x = np.array((np.mgrid[
     -L:L:dims[2]*1j
     ]))
 
-def dot(f1, f2):
-    return np.einsum("ixyz,ixyz->xyz", f1, f2)
-    
-# Returns a 4d array where B_l(x_i, y_j, z_k) = B[l, i, j, k]
-def B(x):
-    r = np.sqrt(dot(x, x))
-    xm = dot(x, m)
-    return 1/(4*pi) * (3*xm*x / r**2 - m) / r**3
 
 def plot_earth(ax):
     n = 20
@@ -56,9 +48,9 @@ def mask3D(f, r1, r2):
 
 # Plot a B field between radius r[0] and r[1]
 def plot_Bfield(ax, r):
-    Bx = B(x)
+    Bx = B(x, m)
     Bx = mask3D(Bx, *r)    
-    ax.quiver(*x, *Bx, pivot = "middle", length = 5, alpha = 0.5)
+    ax.quiver(*x, *Bx, pivot = "middle", length = 0.5, alpha = 0.5)
 
 
 def plot3D():
@@ -70,6 +62,7 @@ def plot3D():
     ax.set_zlim(-L / 2, L / 2)
     plot_earth(ax)
     plot_lines3D(ax)
+    # cool, but messy
     # plot_Bfield(ax, (1, 4))
     ax.pbaspect = [1.0, 1.0, 1.0]
 
@@ -100,3 +93,9 @@ def animate():
     
     a = FA(fig, anim, fargs = (yss, ), frames = N, interval = 10, blit = True)
     plt.show()
+
+# Bonus, if you want it. Works best in interactive mode
+# simulate_paths() in main.py must be run first
+
+plot3D()
+# animate()

@@ -33,7 +33,7 @@ def plot_field(ax, alpha = 1):
         legend_element.append(ax[i].quiver(*x, *Bx, pivot = "middle", alpha = 0.9 *alpha))
         earth = plt.Circle((0, 0), 1, color = "blue", alpha = 0.2 * alpha)
         ax[i].add_artist(earth)
-        legend_element.append(ax[i].quiver(*origin, *ms[i].T, scale = 20, pivot = "middle", color = "red", alpha = 0.8 * alpha))
+        legend_element.append(ax[i].quiver(*origin, *ms[i].T, scale = 2, pivot = "middle", color = "red", alpha = 0.8 * alpha))
 
     return legend_element
 
@@ -47,9 +47,9 @@ def plot_lines(ax, i):
 
 def get_ax1():
     fig, ax = plt.subplots(1, 2, sharey=True, sharex=True, figsize = (20, 10))
-    ax[0].set_xlabel("$x/[R_\\otimes]$")
-    ax[0].set_ylabel("$z/[R_\\otimes]$")
-    ax[1].set_xlabel("$y/[R_\\otimes]$")
+    ax[0].set_xlabel("$x/[R_\\odot]$")
+    ax[0].set_ylabel("$z/[R_\\odot]$")
+    ax[1].set_xlabel("$y/[R_\\odot]$")
     ax[0].set_title("$xz$-plane")
     ax[1].set_title("$yz$-plane")
     ax[0].set_xlim(-L, L)
@@ -57,9 +57,9 @@ def get_ax1():
 
 def get_ax2():
     fig, ax = plt.subplots(n_y, 2, sharex = True, sharey = True, figsize = (20, 32))
-    ax[-1][0].set_xlabel("$x/[R_\\otimes]$")
-    ax[0][0].set_ylabel("$z/[R_\\otimes]$")
-    ax[-1][1].set_xlabel("$y/[R_\\otimes]$")
+    ax[-1][0].set_xlabel("$x/[R_\\odot]$")
+    ax[0][0].set_ylabel("$z/[R_\\odot]$")
+    ax[-1][1].set_xlabel("$y/[R_\\odot]$")
     ax[0][0].set_title("$xz$-plane")
     ax[0][1].set_title("$yz$-plane")
     ax[0][0].set_xlim(-L, L)
@@ -82,9 +82,9 @@ def get_ax3():
 
 def get_ax4():
     fig, ax = plt.subplots(2, 2, sharex = True, sharey = True, figsize = (20, 18))
-    ax[1][0].set_xlabel("$x/[R_\\otimes]$")
-    ax[0][0].set_ylabel("$z/[R_\\otimes]$")
-    ax[1][1].set_xlabel("$y/[R_\\otimes]$")
+    ax[1][0].set_xlabel("$x/[R_\\odot]$")
+    ax[0][0].set_ylabel("$z/[R_\\odot]$")
+    ax[1][1].set_xlabel("$y/[R_\\odot]$")
     ax[0][0].set_title("$xz$-plane")
     ax[0][1].set_title("$yz$-plane")
     ax[0][0].set_xlim(-1, 0)
@@ -96,7 +96,7 @@ def plot1():
     legend_element = plot_field(ax)
     ax[0].legend(legend_element[2:], legends)
     ax[1].legend(legend_element[2:], legends)
-    plt.savefig("figs/b_field_2D.png")
+    plt.savefig("figs/b_field_2D.pdf")
 
 def plot2():
     axs = get_ax2()
@@ -106,7 +106,7 @@ def plot2():
         plot_lines(ax, i)
 
     plt.tight_layout()    
-    plt.savefig("figs/charged_particles_2D.png")
+    plt.savefig("figs/charged_particles_2D.pdf")
 
 def plot3():
     ax, fig = get_ax3()
@@ -123,7 +123,7 @@ def plot3():
         ax.plot(t, dE, color = cm.plasma(i / n))
 
     print("max relative error was {}, by particle {}".format(*maximum))
-    plt.savefig("figs/relative_error_energy.png")
+    plt.savefig("figs/relative_error_energy.pdf")
 
 def plot4():
     axs = get_ax4()
@@ -133,7 +133,7 @@ def plot4():
         plot_lines(ax, i)
 
     plt.tight_layout()    
-    plt.savefig("figs/charged_particles_zoom.png")
+    plt.savefig("figs/charged_particles_zoom.pdf")
 
 def make_plots():
     plot1()
